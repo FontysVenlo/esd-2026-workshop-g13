@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 01: WannaCry · Kill Switch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/style.css">
+</head>
+<body>
+<!-- ================= BRIEFING ================= -->
+<div id="briefing" class="page hidden">
+  <div class="brief">
+    <div class="main">
+      <div class="eyebrow">Case file 01 · Ransomware</div>
+      <h2>WannaCry, Friday 12 May 2017</h2>
+      <p>From the morning of 12 May, computers around the world start showing the same red window. Your files are encrypted. Pay $300 in Bitcoin within three days or the price doubles; after a week the files are gone.</p>
+      <p>This ransomware doesn't wait for someone to open an attachment. Every infected machine scans its own network and random addresses on the internet for Windows PCs with port 445 (SMB) open, then breaks in with <b>EternalBlue</b>, an NSA exploit that the Shadow Brokers group leaked a month earlier. Microsoft had patched the hole in March. Many organisations hadn't installed the patch.</p>
+      <p>By the afternoon NHS hospitals in England are cancelling operations and diverting ambulances. Telefónica, Deutsche Bahn, Renault and FedEx report infections too. Nobody knows how to stop it.</p>
+      <div class="role">
+        <p><b>Your role.</b> You are Marcus Hutchins, a 22-year-old self-taught malware researcher who blogs as <b>MalwareTech</b>. You're on a week off. You came back from lunch, read the news, and a fellow researcher sent you a sample.</p>
+        <p><b>Your mission.</b> Find out what the malware does before it starts encrypting, and use that to stop new infections. Work like a careful analyst: some actions on this machine have consequences.</p>
+      </div>
+      <div class="brief-actions">
+        <button class="btn" id="bootBtn">Boot workstation</button>
+        <button class="btn ghost" data-exit>Back to levels</button>
+      </div>
+    </div>
+    <aside class="facts" aria-label="Key facts">
+      <div class="eyebrow">Key facts</div>
+      <dl>
+        <div><dt>Type</dt><dd>Ransomware with a worm built in: it spreads by itself</dd></div>
+        <div><dt>Way in</dt><dd>EternalBlue exploit against SMBv1, TCP port 445</dd></div>
+        <div><dt>Ransom</dt><dd>$300 in Bitcoin, $600 after 3 days</dd></div>
+        <div><dt>Patch available</dt><dd>MS17-010, released 14 March 2017</dd></div>
+        <div><dt>Scale</dt><dd>200,000+ computers in about 150 countries</dd></div>
+      </dl>
+      <p class="fine">Code, logs and screens in this level are simplified recreations. Nothing here is real malware.</p>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= PLAY =================
+     The engine adds the HUD and toasts to #play; desktop mode adds icons and taskbar to #desktop.
+     Level-specific desktop items (wallpaper mark, sticky note) live here. -->
+<div id="play" class="hidden">
+<div id="stage">
+<div id="desktop">
+  <div class="wallmark">MT-WORKSTATION</div>
+  <aside class="sticky" aria-label="Sticky note">
+    <b>NEW SAMPLE ROUTINE</b>
+    <ol>
+      <li>NEVER run it on this box. Sandbox VM only!</li>
+      <li>watch the network capture</li>
+      <li>disassembler: strings + WinMain</li>
+      <li>weird unregistered domains? register them, point at sinkhole = free tracking</li>
+    </ol>
+    sinkhole-01: <span class="ip">203.0.113.37</span><br>
+    (+ buy milk)
+  </aside>
+</div>
+</div>
+</div>
+
+<!-- ================= DEBRIEF
+     The engine fills #dbTitle, #dbStats and #quiz. ================= -->
+<div id="debrief" class="page hidden">
+  <div class="debrief">
+    <header style="display:grid;gap:10px">
+      <div class="eyebrow" style="color:var(--ok)">Case file 01 · Solved</div>
+      <h2 id="dbTitle">You stopped WannaCry</h2>
+      <div class="stats" id="dbStats"></div>
+    </header>
+
+    <section>
+      <h3>What really happened</h3>
+      <p>Hutchins noticed that the sample's first act was to request a long nonsense domain that nobody had registered. Registering unknown malware domains and pointing them at a sinkhole is routine work: the sinkhole logs every infected machine that calls in, so researchers can count and map infections. He bought it for $10.69.</p>
+      <p>Only after the domain went live did he and his colleagues realise what it was. WannaCry asks the domain a question before doing anything. If it gets an answer, it quits. Within minutes, new infections stopped detonating.</p>
+    </section>
+
+    <div class="cols">
+      <div class="box"><div class="eyebrow">Why build a kill switch?</div><p>Probably as an anti-analysis trick. Many sandboxes fake a successful reply to every web request. "A nonsense domain answers" can mean "I'm being watched, stay quiet". Because the domain was hard-coded and unregistered, anyone could flip the switch.</p></div>
+      <div class="box"><div class="eyebrow">What it didn't fix</div><p>Machines that were already encrypted stayed encrypted. PCs behind proxies couldn't reach the domain and kept encrypting. Copycat variants with a new kill-switch domain, or none, appeared within days. Researcher Matt Suiche sinkholed one of those too.</p></div>
+      <div class="box"><div class="eyebrow">The real fix</div><p>Install MS17-010, switch off SMBv1, block port 445 at the network edge and keep offline backups. The kill switch only bought organisations the time to do that.</p></div>
+      <div class="box"><div class="eyebrow">Who was behind it</div><p>In December 2017 the US and UK governments publicly attributed WannaCry to the Lazarus Group, linked to North Korea.</p></div>
+    </div>
+
+    <section>
+      <h3>Check yourself</h3>
+      <div class="quiz" id="quiz"></div>
+    </section>
+
+    <section class="discuss">
+      <div class="eyebrow">Discuss with your neighbour</div>
+      <p>Your company runs an unpatched Windows 7 PC that controls a production line, and the vendor says patching "voids support". It's Monday after WannaCry. What do you do?</p>
+    </section>
+
+    <section>
+      <h3>Sources</h3>
+      <ul class="sources">
+        <li>Hutchins, M. (2017, May 13). <a href="https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html">How to accidentally stop a global cyber attack</a>. MalwareTech.</li>
+        <li>Whittaker, Z. (2019, July 8). <a href="https://techcrunch.com/2019/07/08/the-wannacry-sinkhole/">The sinkhole that saved the internet</a>. TechCrunch.</li>
+        <li>Microsoft (2017, March 14). <a href="https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010">Security Bulletin MS17-010</a>.</li>
+        <li>National Audit Office (2017). <a href="https://www.nao.org.uk/reports/investigation-wannacry-cyber-attack-and-the-nhs/">Investigation: WannaCry cyber attack and the NHS</a>.</li>
+      </ul>
+    </section>
+
+    <div class="brief-actions"><button class="btn" data-exit>Back to levels</button></div>
+  </div>
+</div>
+<script src="../../shared/core.js"></script>
+<script src="../../shared/engine.js"></script>
+<script src="../../shared/modes/desktop.js"></script>
+<script src="level.js"></script>
+</body>
+</html>

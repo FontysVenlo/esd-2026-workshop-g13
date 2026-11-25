@@ -1,1 +1,34 @@
-<!--  main hub with levels -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kill Switch Malware Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/style.css">
+</head>
+<body>
+<!-- ================= HUB ================= -->
+<main id="hub">
+  <header class="hub-head">
+    <div class="eyebrow">Malware workshop: Enterprise Software Development</div>
+    <h1>KILL<span class="cut">/</span>SWITCH</h1>
+    <p class="lede">Every level is a real outbreak. First you hear how that type of malware works, then you sit at the analyst's desk and stop it yourself.</p>
+  </header>
+  <div class="steps">
+    <div class="step"><b>1</b><p><strong>Listen</strong>Each level starts with a short mini-lecture on one type of malware.</p></div>
+    <div class="step"><b>2</b><p><strong>Unlock</strong>At the end of the lecture the hosts give you a keyword. Type it into the level card.</p></div>
+    <div class="step"><b>3</b><p><strong>Stop the attack</strong>Investigate the case on a simulated workstation. Hints are there if you get stuck.</p></div>
+  </div>
+  <section class="levels" id="levels" aria-label="Levels"></section>
+  <footer class="hub-foot">
+    <span>Everything here is a simplified simulation for teaching. No real malware is involved.</span>
+    <button class="linkbtn" id="resetBtn">Reset my progress</button>
+  </footer>
+</main>
+<script src="shared/core.js"></script>
+<script src="shared/hub.js"></script>
+</body>
+</html>
