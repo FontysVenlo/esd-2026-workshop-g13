@@ -5,6 +5,7 @@
  * Use:
  *   const { openApp, gameClock } = KS.desktop;
  *   KS.engine.run({ ..., mode: KS.desktop.mode({
+ *     label: 'MT-WS',                                              // optional: name shown at the left of the taskbar
  *     clock: { start: [14, 47], speed: 6, date: '12/05/2017' },   // speed = in-game seconds per real second
  *     icons: [['mail', 'Mail'], ...],                            // desktop order; icon art from KS.desktop.ICON
  *     apps:  { mail: { title, w, h, dark?, mount(bodyEl), unmount?() }, ... },
@@ -29,6 +30,10 @@
     bin: '<svg viewBox="0 0 40 40"><path d="M10 12h20l-2 23H12z" fill="#a9b6c9"/><rect x="8" y="8" width="24" height="4" rx="1" fill="#d5dde8"/><rect x="16" y="5" width="8" height="3" rx="1" fill="#d5dde8"/><path d="M16 16v15M20 16v15M24 16v15" stroke="#7d8ba1" stroke-width="1.6"/></svg>',
     exe: '<svg viewBox="0 0 40 40"><path d="M9 3h16l7 7v27H9z" fill="#fff" stroke="#9aa6b8"/><path d="M25 3v7h7" fill="#e5e9f0" stroke="#9aa6b8"/><rect x="11" y="20" width="19" height="10" rx="2" fill="#c0392b"/><text x="20.5" y="27.6" text-anchor="middle" font-family="monospace" font-weight="700" font-size="7.5" fill="#fff">EXE</text></svg>',
     txt: '<svg viewBox="0 0 40 40"><path d="M9 3h16l7 7v27H9z" fill="#fff" stroke="#9aa6b8"/><path d="M25 3v7h7" fill="#e5e9f0" stroke="#9aa6b8"/><path d="M13 16h15M13 20h15M13 24h15M13 28h10" stroke="#9aa6b8" stroke-width="1.6"/></svg>',
+    doc: '<svg viewBox="0 0 40 40"><path d="M9 3h16l7 7v27H9z" fill="#fff" stroke="#9aa6b8"/><path d="M25 3v7h7" fill="#e5e9f0" stroke="#9aa6b8"/><rect x="11" y="20" width="19" height="10" rx="2" fill="#2b579a"/><text x="20.5" y="27.6" text-anchor="middle" font-family="monospace" font-weight="700" font-size="7.5" fill="#fff">DOC</text></svg>',
+    macro: '<svg viewBox="0 0 40 40"><rect x="3" y="5" width="34" height="30" rx="3" fill="#5b3fb5"/><text x="20" y="25" text-anchor="middle" font-family="monospace" font-weight="700" font-size="13" fill="#fff">VBA</text></svg>',
+    map: '<svg viewBox="0 0 40 40"><rect x="3" y="5" width="34" height="30" rx="3" fill="#121b2b" stroke="#5b6b85"/><path d="M10 20L20 12M10 20L20 28M20 12L30 20M20 28L30 20" stroke="#7cb4ff" stroke-width="1.6"/><circle cx="10" cy="20" r="3.2" fill="#ff5446"/><circle cx="20" cy="12" r="3.2" fill="#ffb23f"/><circle cx="20" cy="28" r="3.2" fill="#ffb23f"/><circle cx="30" cy="20" r="3.2" fill="#37d39a"/></svg>',
+    update: '<svg viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="10" rx="2" fill="#26354f" stroke="#5b6b85"/><rect x="5" y="18" width="30" height="10" rx="2" fill="#26354f" stroke="#5b6b85"/><circle cx="10" cy="10" r="1.8" fill="#37d39a"/><circle cx="10" cy="23" r="1.8" fill="#37d39a"/><path d="M20 30v7M16.5 34l3.5 3.5 3.5-3.5" fill="none" stroke="#37d39a" stroke-width="2.2"/></svg>',
   };
 
   let C = null;      // desktop config: clock, icons, apps
@@ -97,7 +102,7 @@
         if (!D) { D = document.createElement('div'); D.id = 'desktop'; stage.appendChild(D); }
         D.insertAdjacentHTML('beforeend', `
           <nav class="icons" id="icons" aria-label="Desktop"></nav>
-          <div class="taskbar"><span class="start">MT-WS</span><div class="tasks" id="tasks"></div><div class="clock" id="clock"></div></div>`);
+          <div class="taskbar"><span class="start">${esc(C.label || 'MT-WS')}</span><div class="tasks" id="tasks"></div><div class="clock" id="clock"></div></div>`);
         $('#icons').innerHTML = C.icons.map(([id, label]) => `<button class="icon" data-app="${id}">${ICON[id] || ''}<span>${esc(label)}</span></button>`).join('');
         $$('#icons [data-app]').forEach(b => b.onclick = () => openApp(b.dataset.app));
       },

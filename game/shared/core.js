@@ -51,7 +51,7 @@
    */
   const LEVELS = [
     { id: 1, type: 'Ransomware', name: 'WannaCry', year: 2017, teaser: 'Hospitals are turning patients away. A live sample just landed in your inbox.', hash: 'c7fa392', path: 'levels/01-ransomware/index.html', playable: true },
-    { id: 2, type: 'Trojan & botnet', name: 'Emotet', year: 2021, teaser: 'Police have seized the botnet\'s servers. You write the last update every infected PC will ever get.', playable: false },
+    { id: 2, type: 'Trojan & botnet', name: 'Emotet', year: 2021, teaser: 'An invoice that isn\'t one, and a botnet that survives unless you take every server at once.', hash: '3e936aa2', path: 'levels/02-trojan/index.html', playable: true },
     { id: 3, type: 'Spyware', name: 'Pegasus', year: 2016, teaser: 'A human rights activist forwards you two strange text messages with links in them.', playable: false },
     { id: 4, type: 'Rootkit', name: 'Sony BMG', year: 2005, teaser: 'A music CD installed something on your PC that the operating system can\'t see.', playable: false },
     { id: 5, type: 'Backdoor', name: 'xz utils', year: 2024, teaser: 'SSH logins got half a second slower. Nobody else noticed.', playable: false },

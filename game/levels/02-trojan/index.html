@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level 02: Emotet · Kill Switch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../shared/style.css">
+</head>
+<body>
+<!-- ================= BRIEFING ================= -->
+<div id="briefing" class="page hidden">
+  <div class="brief">
+    <div class="main">
+      <div class="eyebrow">Case file 02 · Trojan / botnet</div>
+      <h2>Emotet, Tuesday 26 January 2021</h2>
+      <p>An email arrives as a reply in a conversation you really had. Attached is an invoice. The document asks you to click "Enable Content" to read it. That one click installs Emotet, and nothing seems to happen.</p>
+      <p>In the background the PC joins a botnet. Emotet reads the mailbox, replies inside real conversations to reach the next victim, and downloads whatever other criminals pay for: <b>TrickBot</b>, <b>Qakbot</b> and, after those, <b>Ryuk</b> ransomware. Europol calls it the world's most dangerous malware.</p>
+      <p>The botnet is run through several hundred servers around the world. Every infected PC knows a list of them. Take one server down and the PCs move on to the next.</p>
+      <div class="role">
+        <p><b>Your role.</b> You are an investigator on the Dutch police's Team High Tech Crime. Your team has worked its way into Emotet's infrastructure, and police in eight countries are waiting for your signal. The Dutch call it Operation LadyBird.</p>
+        <p><b>Your mission.</b> Take every server away from the criminals in one action, then decide what happens to the infected PCs. Work carefully: some actions on this machine have consequences.</p>
+      </div>
+      <div class="brief-actions">
+        <button class="btn" id="bootBtn">Boot workstation</button>
+        <button class="btn ghost" data-exit>Back to levels</button>
+      </div>
+    </div>
+    <aside class="facts" aria-label="Key facts">
+      <div class="eyebrow">Key facts</div>
+      <dl>
+        <div><dt>Type</dt><dd>Trojan and loader: it gets in disguised as a document, then installs other malware</dd></div>
+        <div><dt>Way in</dt><dd>Word attachment with a macro. The victim clicks "Enable Content"</dd></div>
+        <div><dt>Installs</dt><dd>TrickBot, Qakbot and, through them, Ryuk ransomware</dd></div>
+        <div><dt>Scale</dt><dd>About 1.6 million PCs between April 2020 and January 2021</dd></div>
+        <div><dt>Servers</dt><dd>Several hundred, in layers, around the world</dd></div>
+      </dl>
+      <p class="fine">Emails, code and screens in this level are simplified recreations. Nothing here is real malware.</p>
+    </aside>
+  </div>
+</div>
+
+<!-- ================= PLAY =================
+     The engine adds the HUD and toasts to #play; desktop mode adds icons and taskbar to #desktop.
+     Level-specific desktop items (wallpaper mark, sticky note) live here. -->
+<div id="play" class="hidden">
+<div id="stage">
+<div id="desktop">
+  <div class="wallmark">TEAM HIGH TECH CRIME</div>
+  <aside class="sticky" aria-label="Sticky note">
+    <b>LADYBIRD: ACTION DAY</b>
+    <ol>
+      <li>strange .doc? NEVER "enable content" on this box. Sandbox VM only!</li>
+      <li>bot running in the VM? terminal: ps, dump</li>
+      <li>ALL servers in ONE strike. slow teams go first!!</li>
+      <li>watch their list timer</li>
+    </ol>
+    after that: what do we send the PCs??
+  </aside>
+</div>
+</div>
+</div>
+
+<!-- ================= DEBRIEF
+     The engine fills #dbTitle, #dbStats and #quiz. ================= -->
+<div id="debrief" class="page hidden">
+  <div class="debrief">
+    <header style="display:grid;gap:10px">
+      <div class="eyebrow" style="color:var(--ok)">Case file 02 · Solved</div>
+      <h2 id="dbTitle">You took Emotet down</h2>
+      <div class="stats" id="dbStats"></div>
+    </header>
+
+    <section>
+      <h3>What really happened</h3>
+      <p>In the last week of January 2021, police in the Netherlands, Germany, the United States, the United Kingdom, France, Lithuania, Canada and Ukraine took over Emotet's servers at the same time. Two of the three main servers stood in the Netherlands.</p>
+      <p>Then they used the botnet's own update channel against it. Infected PCs picked up a police file at their next update and from then on only talked to police servers. On 25 April 2021 at 12:00 that file removed Emotet from each PC.</p>
+    </section>
+
+    <div class="cols">
+      <div class="box"><div class="eyebrow">What stayed on the PCs</div><p>The update removed Emotet and nothing else. TrickBot, Qakbot or Ryuk that had come in through Emotet were still there, and stolen passwords stayed stolen. That is why victims had to be told.</p></div>
+      <div class="box"><div class="eyebrow">Warning the victims</div><p>On the seized servers the Dutch police found about 600,000 email addresses with passwords. They put a page online where anyone could check their own address. Later the FBI and the Dutch police gave 4.3 million addresses to Have I Been Pwned.</p></div>
+      <div class="box"><div class="eyebrow">It came back</div><p>Taking the servers did not stop the people behind Emotet. On 14 November 2021 TrickBot, which Emotet used to install, started installing a rebuilt Emotet on the PCs it controlled.</p></div>
+      <div class="box"><div class="eyebrow">The month that starts at zero</div><p>The date in the real police update was written the way you wrote it: month 3, day 25. The first researcher who read it announced 25 March. In that code months are counted from 0, so 3 is April.</p></div>
+      <div class="box"><div class="eyebrow">The method was reused</div><p>In August 2023 the FBI took over the servers of Qakbot and pushed an uninstaller to about 700,000 PCs, the same way.</p></div>
+    </div>
+
+    <section>
+      <h3>Where this level simplified</h3>
+      <p><b>The clock.</b> Your teams needed seconds and the operators changed a server every minute or so. In reality the preparation took a long investigation and the action took a week.</p>
+      <p><b>The size.</b> You seized nine servers. The real botnet had several hundred, split over three separate networks, with lists that changed all the time.</p>
+      <p><b>Who sent the update.</b> The Dutch police took over the main servers in the Netherlands. The uninstall update itself was made and sent by the German federal police (BKA).</p>
+      <p><b>The limits were real.</b> The US Department of Justice stressed that the police file only touched what Emotet's operators had put on the PCs, not the owners' own data.</p>
+    </section>
+
+    <section>
+      <h3>Check yourself</h3>
+      <div class="quiz" id="quiz"></div>
+    </section>
+
+    <section class="discuss">
+      <div class="eyebrow">Discuss with your neighbour</div>
+      <p>The police changed software on more than a million privately owned computers without asking the owners. Was that right? Where would you draw the line?</p>
+    </section>
+
+    <section>
+      <h3>Sources</h3>
+      <ul class="sources">
+        <li>Europol &amp; Eurojust (2021, January 27). <a href="https://www.eurojust.europa.eu/worlds-most-dangerous-malware-emotet-disrupted-through-global-action">World's most dangerous malware EMOTET disrupted through global action</a>.</li>
+        <li>Openbaar Ministerie (2021, January 27). <a href="https://www.om.nl/actueel/nieuws/2021/01/27/internationale-politieoperatie-ladybird-botnet-emotet-wereldwijd-ontmanteld">Internationale politieoperatie LadyBird: botnet Emotet wereldwijd ontmanteld</a>.</li>
+        <li>US Department of Justice (2021). <a href="https://www.justice.gov/opa/pr/emotet-botnet-disrupted-international-cyber-operation">Emotet botnet disrupted in international cyber operation</a>.</li>
+        <li>BleepingComputer (2021). <a href="https://www.bleepingcomputer.com/news/security/europol-emotet-malware-will-uninstall-itself-on-april-25th/">Europol: Emotet malware will uninstall itself on April 25th</a>.</li>
+        <li>BleepingComputer (2021). <a href="https://www.bleepingcomputer.com/news/security/the-emotet-malware-is-back-and-rebuilding-the-botnet-via-trickbot/">The Emotet malware is back and rebuilding the botnet via TrickBot</a>.</li>
+        <li>TechCrunch (2023, August 29). <a href="https://techcrunch.com/2023/08/29/fbi-operation-qakbot-uninstall">The FBI operation that uninstalled Qakbot</a>.</li>
+      </ul>
+    </section>
+
+    <div class="brief-actions"><button class="btn" data-exit>Back to levels</button></div>
+  </div>
+</div>
+<script src="../../shared/core.js"></script>
+<script src="../../shared/engine.js"></script>
+<script src="../../shared/modes/desktop.js"></script>
+<script src="level.js"></script>
+</body>
+</html>

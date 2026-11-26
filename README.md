@@ -22,7 +22,7 @@ Progress is saved in each player's own browser, so a page refresh doesn't lose a
 | # | Malware type | Real case 
 |---|---|---|
 | 1 | Ransomware / worm | WannaCry (2017): find and trigger the kill switch | 
-| 2 | Trojan / botnet | Emotet (2021): seize every server of the botnet, then choose its last update (in development) | 
+| 2 | Trojan / botnet | Emotet (2021): time one strike on every server of the botnet, then build its last update | 
 | 3 | _TBD_ | _TBD_ | 
 | 4 | _TBD_ | _TBD_ | 
 | 5 | _TBD_ | _TBD_ | 
@@ -49,6 +49,7 @@ game/
   index.html              hub: level cards, keyword unlock, progress
   shared/                 code and styles every level uses (core, engine, hub, desktop mode)
   levels/01-ransomware/   level 1: WannaCry
+  levels/02-trojan/       level 2: Emotet
 docs/
   design/ideas.md         level designs
   research/general/       notes on how the game is set up
