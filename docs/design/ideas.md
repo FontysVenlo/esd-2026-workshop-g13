@@ -4,8 +4,89 @@ One section per level: what the player does, how they win and what the debrief s
 
 | # | Case | Status |
 |---|---|---|
-| 1 | WannaCry | Built: [game/levels/01-ransomware/](../../game/levels/01-ransomware/) |
+| 1 | WannaCry | Built: [game/levels/01-ransomware/](../../game/levels/01-ransomware/), design below |
 | 2 | Emotet | Built: [game/levels/02-trojan/](../../game/levels/02-trojan/), design below |
+
+## Level 1: WannaCry (2017, the kill switch)
+
+**Type:** Ransomware / worm \
+**Player:** Marcus Hutchins (MalwareTech), a 22-year-old malware researcher on a week off \
+**Objective:** stop WannaCry from infecting more machines \
+**Research:** [wannacry.md](../research/malware-types/ransomware/wannacry.md)
+
+The level has three parts. Each one teaches one thing about this ransomware: it spreads by itself, it asks one question before it does anything, and that question can be answered by anyone.
+
+### Part 1: the sample
+
+The player starts on Marcus's workstation on 12 May 2017, while the outbreak is running.
+
+* **Mail.** A fellow researcher has sent a live sample (`wcry_sample.exe`, in the samples folder). A news alert describes the hospitals being hit. A third mail from the hosting provider gives the address of Marcus's own sinkhole server.
+* **Sticky note.** Marcus's routine for new samples: never run it on this machine, use the sandbox, read the code, and register strange unregistered domains to track infections. It also holds the sinkhole address.
+* **Outbreak monitor.** Live counters (hosts encrypted, new infections per minute, countries), a graph and a news ticker. They keep climbing while the player works.
+* **Trap.** Running the sample from the samples folder on the workstation shows the ransom note. The player restores a backup and gets a time penalty.
+
+What the player learns: a live sample is only opened in an isolated machine.
+
+### Part 2: what it does first
+
+* **Sandbox VM.** The player detonates the sample and reads the packet capture. Before any other traffic, the sample asks DNS for one long nonsense domain and gets "does not exist". Only then does it install itself, scan port 445 and encrypt the VM.
+* **Disassembler.** The code shows the same thing: `WinMain` requests that domain and returns at once if the request succeeds. Everything else (install, encrypt, spread) only runs if it fails. The other functions show the worm: scanning the local network and random internet addresses for port 445 and attacking with EternalBlue.
+* **Terminal.** `nslookup`, `whois`, `curl` and `ping` let the player check the domain. `whois` says nobody has registered it and anyone can buy it.
+
+What the player learns: the malware checks a domain before it acts, and that domain is free.
+
+### Part 3: the kill switch
+
+* **Browser.** A made-up registrar, DomainDepot. The player searches for the domain, registers it for $10.69 and sets its A record to the sinkhole address.
+* If the address is wrong, the sinkhole reports that it still gets no requests.
+* With the right address, the sinkhole reports thousands of requests per second, the monitor shows new infections dropping, and a colleague writes: what did you just do, detonate the sample again.
+* **Win.** The player detonates the sample in the sandbox once more. This time the domain answers and the sample quits without encrypting anything.
+
+What the player learns: registering one domain stopped every new infection, and the person who did it only found out afterwards.
+
+### Hints
+
+1. Start like a real analyst: read the sticky note and the README in the samples folder, and never run the sample on the workstation.
+2. Detonate the sample in the Sandbox VM and read the packet capture from the top. One request happens before any other traffic. Check that domain with `nslookup` or `whois`.
+3. Register the domain in the Browser, set its A record to the sinkhole address from the sticky note, then detonate the sample again.
+
+### Debrief
+
+* **What really happened:** Hutchins registered the domain as routine tracking and only then realised it was a kill switch.
+* **Why build a kill switch:** probably a trick against analysis, because many sandboxes answer every web request.
+* **What it didn't fix:** machines that were already encrypted, PCs behind proxies, and copycat versions with another domain or none.
+* **The real fix:** install the MS17-010 patch, switch off SMBv1, block port 445 and keep offline backups.
+* **Who was behind it:** the Lazarus Group, linked to North Korea.
+
+Stats shown: time, hints used, own PC infected, sandbox runs.
+
+Quiz:
+
+1. Why did registering the domain stop WannaCry? (The malware quits if a request to that domain succeeds.)
+2. A hospital PC was encrypted before the kill switch went live. What happened to its files? (They stayed encrypted.)
+3. What would have prevented most infections? (Installing MS17-010 and disabling SMBv1.)
+4. Why do researchers register unknown domains found in malware? (To sinkhole the traffic and count infected machines.)
+
+Discussion question: your company runs an unpatched Windows 7 PC that controls a production line, and the vendor says patching "voids support". It's Monday after WannaCry. What do you do?
+
+### Where the game simplifies
+
+| In the game | In reality |
+|---|---|
+| The player registers the domain to stop the outbreak | Hutchins registered it to track the outbreak. The kill-switch effect was discovered afterwards |
+| Infections drop to almost zero | New encryptions stopped, but infected machines and later variants stayed |
+| "DomainDepot" | Namecheap, same price |
+| One sinkhole server | A sinkhole that soon came under attack from other botnets |
+| Every PC can reach the domain | PCs behind a proxy could not, and kept encrypting |
+
+The debrief mentions the first, second and last.
+
+### As built
+
+* Unlock keyword for the hub (said at the end of the mini-lecture): ETERNALBLUE.
+* In-game date: 12 May 2017, starting at 14:47.
+* Time penalty: +2:00 for running the sample on the workstation. Nothing else costs time.
+* Buying other domains is possible and does nothing, apart from a comment from the bank.
 
 ## Level 2: Emotet (2021, Operation LadyBird)
 
