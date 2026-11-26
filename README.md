@@ -22,12 +22,12 @@ Progress is saved in each player's own browser, so a page refresh doesn't lose a
 | # | Malware type | Real case 
 |---|---|---|
 | 1 | Ransomware / worm | WannaCry (2017): find and trigger the kill switch | 
-| 2 | _TBD_ | _TBD_ | 
+| 2 | Trojan / botnet | Emotet (2021): seize every server of the botnet, then choose its last update (in development) | 
 | 3 | _TBD_ | _TBD_ | 
 | 4 | _TBD_ | _TBD_ | 
 | 5 | _TBD_ | _TBD_ | 
 
-The full overview is in (relevant doc)
+Level designs are in [docs/design/ideas.md](docs/design/ideas.md). The research behind each case is in [docs/research/malware-types/](docs/research/malware-types/).
 
 ## Safety disclaimer
 
@@ -39,5 +39,16 @@ Nothing in this project is real malware. All "samples", networks and infections 
 
 ## Repository structure
 
-(TODO)
+```
+game/
+  index.html              hub: level cards, keyword unlock, progress
+  shared/                 code and styles every level uses (core, engine, hub, desktop mode)
+  levels/01-ransomware/   level 1: WannaCry
+docs/
+  design/ideas.md         level designs
+  research/general/       notes on how the game is set up
+  research/malware-types/ one folder per malware type:
+                          main-cases.md (cases we considered) and one file per chosen case
+slides/                   notes for the mini-lectures
+```
 
