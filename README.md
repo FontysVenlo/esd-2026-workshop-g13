@@ -35,7 +35,12 @@ Nothing in this project is real malware. All "samples", networks and infections 
 
 ## Running it locally
 
-(GUIDE)
+The game is plain HTML, CSS and JavaScript. Nothing needs to be installed or built.
+
+- **With a local server** (recommended): run `python -m http.server 8000` inside the `game` folder and open http://localhost:8000.
+- **Without a server:** open `game/index.html` in Chrome or Edge. Other browsers may not keep the unlocked levels between pages when the game is opened as a file.
+
+Each level is locked until its keyword is typed on the hub. To skip the keyword while developing, open the level page directly with `?dev` at the end, for example `game/levels/01-ransomware/index.html?dev`.
 
 ## Repository structure
 

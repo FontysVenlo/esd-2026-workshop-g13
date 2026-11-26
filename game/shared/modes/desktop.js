@@ -95,7 +95,6 @@
       setup(stage) {
         D = $('#desktop', stage);
         if (!D) { D = document.createElement('div'); D.id = 'desktop'; stage.appendChild(D); }
-        $('#play').classList.add('with-taskbar');
         D.insertAdjacentHTML('beforeend', `
           <nav class="icons" id="icons" aria-label="Desktop"></nav>
           <div class="taskbar"><span class="start">MT-WS</span><div class="tasks" id="tasks"></div><div class="clock" id="clock"></div></div>`);

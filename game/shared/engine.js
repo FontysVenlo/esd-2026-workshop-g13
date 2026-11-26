@@ -1,7 +1,7 @@
 /* Kill Switch: level engine (the frame every level shares).
  *
  * The engine runs one level page: keyword gate -> briefing -> play -> win -> debrief.
- * It owns the HUD (objective, timer, hints, exit), toasts, dialogs, overlays,
+ * It owns the HUD (objective, timer, hints, messages, exit), toasts, dialogs, overlays,
  * time penalties, saving the best time, and the debrief with its quiz.
  * What happens during play is up to the level: either a ready-made mode
  * (e.g. KS.desktop, the analyst desktop in modes/desktop.js) or its own minigame.
@@ -59,31 +59,39 @@
         <span class="mission"><b>OBJECTIVE</b>${esc(L.objective)}</span>
         <span class="timer" id="timer" aria-label="Time elapsed">00:00</span>
         <button class="btn" id="hintBtn">Hint 0/${L.hints.length}</button>
+        <button class="btn ghost" id="logBtn" style="color:var(--text)" title="Read messages and hints again">Messages 0</button>
         <button class="btn ghost" id="exitLvl" style="color:var(--text)">Exit</button>
       </div>
       <div class="toasts" id="toasts" aria-live="polite"></div>`);
     $('#hintBtn').onclick = () => {
       if (!G) return;
-      if (G.hints < L.hints.length) G.hints++;
+      const fresh = G.hints < L.hints.length;
+      if (fresh) G.hints++;
       updateHint();
-      toast('Hint ' + G.hints, L.hints[G.hints - 1], 'hint', null, 22000);
+      // once all hints are out the button only shows the last one again
+      // so it replaces the hint on screen and isn't logged a second time
+      $$('#toasts .toast.hint').forEach(t => t.remove());
+      toast('Hint ' + G.hints, L.hints[G.hints - 1], 'hint', null, 22000, !fresh);
     };
+    $('#logBtn').onclick = () => { if (G) showLog(); };
     $('#exitLvl').onclick = () => {
       if (!G) return;
       dialog('Leave this case?', '<p>Your progress in this level will be lost.</p>', [{ label: 'Leave', cls: 'danger', fn: toHub }, { label: 'Keep playing', cls: 'ghost' }]);
     };
   }
   function updateHint() { $('#hintBtn').textContent = `Hint ${G.hints}/${L.hints.length}`; }
+  function updateLog() { $('#logBtn').textContent = 'Messages ' + G.log.length; }
 
   /* ---------- attempt lifecycle ---------- */
   function start() {
     teardown();
     G = Object.assign(
-      { start: Date.now(), penalty: 0, hints: 0, won: false, endEl: null, dead: false, timers: [], iv: null },
+      { start: Date.now(), penalty: 0, hints: 0, won: false, endEl: null, dead: false, timers: [], iv: null, log: [] },
       M.newState ? M.newState() : {},
       L.newState ? L.newState() : {});
     show('play');
     updateHint();
+    updateLog();
     M.onStart && M.onStart(G);
     L.onStart && L.onStart(G);
     tick(); G.iv = setInterval(tick, 1000);
@@ -105,13 +113,26 @@
 
   /* ---------- toasts, dialogs, overlays ---------- */
   // text may contain trusted HTML from the level itself.
-  function toast(from, text, cls, onClick, ms) {
+  function toast(from, text, cls, onClick, ms, repeat) {
+    if (!repeat) { G.log.push({ from, text, cls: cls || '', at: elapsed() }); updateLog(); }
     const t = document.createElement('div'); t.className = 'toast ' + (cls || '');
     t.innerHTML = `<b>${esc(from)}</b>${text}`;
     t.onclick = () => { if (onClick) onClick(); t.remove(); };
     $('#toasts').appendChild(t);
-    const all = $$('#toasts .toast'); if (all.length > 4) all[0].remove();
+    const all = $$('#toasts .toast'); if (all.length > 3) all[0].remove();
     G.timers.push(setTimeout(() => t.remove(), ms || 9000));
+  }
+  // shows every message and hint of this attempt again, newest first
+  // toasts fade after a few seconds, so this is the only way to re-read them
+  function showLog() {
+    if ($('#play > .overlay .msglog')) return;
+    const items = G.log.slice().reverse().map(m => `<li class="${m.cls}"><b>${esc(m.from)}<span>${fmt(m.at)}</span></b>${m.text}</li>`).join('');
+    const o = overlay(`<div class="msglog" role="dialog" aria-label="Messages"><div class="titlebar"><span class="t">Messages</span><button aria-label="Close messages" data-close>×</button></div>${items ? `<ul>${items}</ul>` : '<p class="fine">No messages yet.</p>'}</div>`);
+    const x = o.querySelector('[data-close]');
+    x.onclick = () => o.remove();
+    o.onclick = e => { if (e.target === o) o.remove(); };
+    o.onkeydown = e => { if (e.key === 'Escape') o.remove(); };
+    x.focus();
   }
   // Full-screen takeover above the stage and HUD (trap screens, win box). Removed on teardown.
   function overlay(html) {
